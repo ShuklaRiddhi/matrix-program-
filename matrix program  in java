@@ -1,0 +1,66 @@
+You are given a 0-indexed 2D matrix grid of size n x n, where (r, c) represents:
+
+A cell containing a thief if grid[r][c] = 1
+An empty cell if grid[r][c] = 0
+You are initially positioned at cell (0, 0). In one move, you can move to any adjacent cell in the grid, including cells containing thieves.
+solution of problem ->
+
+import java.util.ArrayDeque;
+import java.util.Queue;
+
+public class ShortestPathToThief {
+
+    static class Cell {
+        int row, col, distance;
+
+        Cell(int row, int col, int distance) {
+            this.row = row;
+            this.col = col;
+            this.distance = distance;
+        }
+    }
+
+    public static int shortestPathToThief(int[][] grid) {
+        int n = grid.length;
+        boolean[][] visited = new boolean[n][n];
+        Queue<Cell> queue = new ArrayDeque<>();
+        int[][] directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}}; // right, down, left, up
+
+        queue.offer(new Cell(0, 0, 0));
+        visited[0][0] = true;
+
+        while (!queue.isEmpty()) {
+            Cell current = queue.poll();
+            int row = current.row;
+            int col = current.col;
+            int distance = current.distance;
+
+            if (grid[row][col] == 1) {
+                return distance;
+            }
+
+            for (int[] dir : directions) {
+                int newRow = row + dir[0];
+                int newCol = col + dir[1];
+
+                if (newRow >= 0 && newRow < n && newCol >= 0 && newCol < n && !visited[newRow][newCol]) {
+                    visited[newRow][newCol] = true;
+                    queue.offer(new Cell(newRow, newCol, distance + 1));
+                }
+            }
+        }
+
+        return -1; // No thief found
+    }
+
+    public static void main(String[] args) {
+        int[][] grid = {
+            {0, 0, 0, 0},
+            {0, 1, 0, 0},
+            {0, 0, 0, 1},
+            {0, 0, 0, 0}
+        };
+        System.out.println(shortestPathToThief(grid)); // Output: 2 (minimum distance to a thief)
+    }
+}
+
